@@ -117,12 +117,14 @@
             android:layout_height="match_parent"/>
 
         <Button
+            android:id="@+id/categoryBtn"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:drawableRight="@drawable/ic_no_line_arrow"
             android:background="#6fdc6f"
             android:paddingRight="30dp"
+            android:onClick="onClickGetCategories"
             android:text="Katerogiat"/>
 
     </LinearLayout>
