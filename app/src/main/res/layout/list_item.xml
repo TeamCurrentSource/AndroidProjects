@@ -17,10 +17,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/titleText"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/videoImgView"
             android:padding="2dp"
             android:text="Description"/>
 
     <ImageView
+        android:id="@+id/videoImgView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
