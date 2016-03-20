@@ -7,29 +7,25 @@ import java.util.Arrays;
  */
 
 public class JsonDataObject {
-    private String id;
-    private String node_slug;
     public Children children[];
 
     @Override
     public String toString() {
         return "JsonDataObject{" +
-                "id='" + id + '\'' +
-                ", node_slug='" + node_slug + '\'' +
-                ", children=" + Arrays.toString(children) +
+                "children=" + Arrays.toString(children) +
                 '}';
     }
 
     public class Children {
-        String node_slug;
-        String relative_url;
+        public String relative_url;
+        public String description;
         public String title;
 
         @Override
         public String toString() {
-            return "children{" +
-                    "node_slug='" + node_slug + '\'' +
-                    ", url='" + relative_url + '\'' +
+            return "Children{" +
+                    "relative_url='" + relative_url + '\'' +
+                    ", description='" + description + '\'' +
                     ", title='" + title + '\'' +
                     '}';
         }

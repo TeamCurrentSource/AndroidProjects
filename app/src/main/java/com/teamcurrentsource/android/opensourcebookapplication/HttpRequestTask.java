@@ -1,5 +1,7 @@
 package com.teamcurrentsource.android.opensourcebookapplication;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -20,19 +22,26 @@ import java.net.URL;
  */
 public class HttpRequestTask extends AsyncTask<Object, Void, String> {
     private static final String BASEURL = "http://www.khanacademy.org/api/v1";
-    private static final String LOG_TAG = "HttpRequestTask";
+    public static final String LOG_TAG = "HttpRequestTask";
     private static final String CATEGORIES = "/topictree?kind=topic";
+    public static final String INDEX = "JsonDataObject";
+    private HttpRequestListener listener;
+    private Context source;
+    private Class<?> destination;
     private String currentUrl;
 
-    public HttpRequestTask(String value) {
+    public HttpRequestTask(String value, HttpRequestListener lstener, Context src, Class<?> dest) {
         currentUrl = value;
+        listener = lstener;
+        source = src;
+        destination = dest;
     }
 
     @Override
     protected String doInBackground(Object... params) {
         HttpURLConnection connection = null;
         try {
-            Log.d(LOG_TAG, this.getStatus().toString());
+            Log.d(LOG_TAG, "Entering doInBackground");
             URL url = new URL(BASEURL + CATEGORIES);
             connection = (HttpURLConnection) url.openConnection();
             connection.connect();
@@ -41,8 +50,9 @@ public class HttpRequestTask extends AsyncTask<Object, Void, String> {
             Reader rdr = new InputStreamReader(in);
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             Gson gson = new GsonBuilder().create();
-            JsonDataObject o = gson.fromJson(rdr, JsonDataObject.class);
+            listener.processHttpRequest(gson, reader);
 
+            //lähetään gsoni mielummin
 
         } catch (MalformedURLException e) {
             Log.d(LOG_TAG, "Error @Malformed");
@@ -54,14 +64,23 @@ public class HttpRequestTask extends AsyncTask<Object, Void, String> {
             Log.d(LOG_TAG, "Error @JSONException");
             e.printStackTrace();
         }
+        Log.d(LOG_TAG, "Leaving doInBackground");
 
         return "e-e-e";
     }
 
     @Override
     protected void onPostExecute(String result) {
-        Log.d(LOG_TAG, "FINISHED!");
-        Log.d(LOG_TAG, "RESULT= " + result);
+        Log.d(LOG_TAG, "Staring new intent");
+
+        //tarkasta jos luokka on mainact
+        ((MainActivity) source).cancelProgressDialog();
+        Intent intent = new Intent(source,destination);
+        JsonDataObject obj = ((MainActivity) source).getDataObject();
+        intent.putExtra(INDEX, new Gson().toJson(obj));
+        Log.d(LOG_TAG, new Gson().toJson(obj));
+        source.startActivity(intent);        //passataan data stringinä
+        Log.d(LOG_TAG, "onPostExecute finesed!");
     }
 
     private String redirect() {
