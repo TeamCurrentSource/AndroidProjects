@@ -18,6 +18,8 @@ import java.io.BufferedReader;
 import java.util.ArrayList;
 
 
+// TErveppä terve
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "MainAct";
