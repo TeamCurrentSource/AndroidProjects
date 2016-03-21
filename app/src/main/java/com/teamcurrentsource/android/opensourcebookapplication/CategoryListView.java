@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -39,6 +40,16 @@ public class CategoryListView extends AppCompatActivity {
         adapter = new CategoryListAdapter(this, categoryItemArrayList);
 
         ListView categoryList = (ListView) findViewById(R.id.list);
+
+        categoryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(HttpRequestTask.LOG_TAG, String.valueOf(position));
+                Intent i = new Intent(CategoryListView.this, SingleCategoryActivity.class);
+                startActivity(i);
+           }
+         }
+        );
         categoryList.setAdapter(adapter);
     }
 

@@ -33,10 +33,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickGetCategories(View v) {
         progressDialog = ProgressDialog.show(MainActivity.this, "", "Loading. Please wait...", true);
-        new HttpRequestTask("CATEGORY" ,new HttpRequestListener() {
+        new HttpRequestTask("CATEGORY", new HttpRequestListener() {
             @Override
-            public void processHttpRequest(Gson data, BufferedReader reader) {
-                dataObject = data.fromJson(reader, JsonDataObject.class);
+            public void processHttpRequest(Gson gson, BufferedReader reader) {
+                dataObject = gson.fromJson(reader, JsonDataObject.class);
                 Log.d(LOG_TAG, dataObject.toString());
             }
         },  this, CategoryListView.class).execute();

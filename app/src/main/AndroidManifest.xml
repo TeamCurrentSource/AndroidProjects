@@ -20,9 +20,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".CategoryFragment">
-        </activity>
         <activity android:name=".CategoryListView">
+        </activity>
+        <activity android:name=".SingleCategoryActivity">
         </activity>
     </application>
 

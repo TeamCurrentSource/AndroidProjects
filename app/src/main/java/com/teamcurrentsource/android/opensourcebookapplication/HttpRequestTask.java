@@ -45,10 +45,11 @@ public class HttpRequestTask extends AsyncTask<Object, Void, String> {
             URL url = new URL(BASEURL + CATEGORIES);
             connection = (HttpURLConnection) url.openConnection();
             connection.connect();
-            InputStream in = connection.getInputStream();
 
+            InputStream in = connection.getInputStream();
             Reader rdr = new InputStreamReader(in);
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
             Gson gson = new GsonBuilder().create();
             listener.processHttpRequest(gson, reader);
 
