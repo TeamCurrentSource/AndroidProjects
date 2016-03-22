@@ -87,8 +87,8 @@ public class HttpRequestTask extends AsyncTask<Object, Void, String> {
             intent.putExtra(INDEX, new Gson().toJson(obj));
             Log.d(LOG_TAG, "Spinner stoppped");
         }
-        if(source.getClass() == CategoryListView.class) {
-            JsonDataObject obj = ((CategoryListView) source).getDataObject();
+        if(source.getClass() == CategoryActivity.class) {
+            JsonDataObject obj = ((CategoryActivity) source).getDataObject();
             intent.putExtra(INDEX, new Gson().toJson(obj));
         }
     }

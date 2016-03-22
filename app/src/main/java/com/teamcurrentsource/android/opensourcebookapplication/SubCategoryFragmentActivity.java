@@ -11,7 +11,7 @@ import android.util.Log;
  * Created by Antti on 21.3.2016.
  */
 
-public class SingleCategoryActivity extends FragmentActivity {
+public class SubCategoryFragmentActivity extends FragmentActivity {
 
     public static String INDEX = "DATA";
     @Override

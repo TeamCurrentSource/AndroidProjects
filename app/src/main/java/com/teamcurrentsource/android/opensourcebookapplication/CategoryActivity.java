@@ -1,6 +1,5 @@
 package com.teamcurrentsource.android.opensourcebookapplication;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -20,7 +18,7 @@ import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.util.ArrayList;
 
-public class CategoryListView extends AppCompatActivity {
+public class CategoryActivity extends AppCompatActivity {
 
     ArrayList<CategoryItem> categoryItemArrayList;
     CategoryListAdapter adapter;
@@ -55,7 +53,7 @@ public class CategoryListView extends AppCompatActivity {
                         dataObject = gson.fromJson(reader, JsonDataObject.class);
                         Log.d(HttpRequestTask.LOG_TAG, dataObject.toString());
                     }
-                },  CategoryListView.this, SingleCategoryActivity.class).execute();
+                },  CategoryActivity.this, SubCategoryFragmentActivity.class).execute();
 
                 Log.d(HttpRequestTask.LOG_TAG, title);
            }

@@ -1,22 +1,19 @@
 package com.teamcurrentsource.android.opensourcebookapplication;
 
-import android.content.Intent;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 
-import java.io.BufferedReader;
 import java.util.ArrayList;
 
 /**
@@ -50,12 +47,12 @@ public class SubCategoryFragment extends Fragment {
         subCategoryArray = new ArrayList<SubCategory>();
         Bundle bundle = this.getArguments();
         if(bundle != null) {
-            String data = bundle.getString(SingleCategoryActivity.INDEX);
+            String data = bundle.getString(SubCategoryFragmentActivity.INDEX);
             Log.d(HttpRequestTask.LOG_TAG, data);
             JsonDataObject dataObject = new Gson().fromJson(data, JsonDataObject.class);
 
             for(JsonDataObject.Children c  : dataObject.children) {
-                subCategoryArray.add(new SubCategory("noes", c.description));
+                subCategoryArray.add(new SubCategory(c.translated_title, ""));
             }
         }
     }
@@ -71,7 +68,7 @@ public class SubCategoryFragment extends Fragment {
                 public void onClick(View v) {
                     int position = getAdapterPosition();
                     Log.d(HttpRequestTask.LOG_TAG, subCategoryArray.get(position).title);
-                    //startActivity(SubCategoryActivity.getCategoryIntent(this, 10));
+                    //startActivity(VideoFragmentActivity.getCategoryIntent(this, 10));
                     /*
                     new HttpRequestTask("CATEGORY", new HttpRequestListener() {
                         @Override
@@ -79,15 +76,27 @@ public class SubCategoryFragment extends Fragment {
                             dataObject = gson.fromJson(reader, JsonDataObject.class);
                             Log.d(LOG_TAG, dataObject.toString());
                         }
-                    },  this, CategoryListView.class).execute();*/
-                    Intent i = new Intent(getActivity(), SubCategoryActivity.class);
-                    startActivity(i);
+                    },  this, CategoryActivity.class).execute();*/
+                    //Intent i = new Intent(getActivity(), VideoFragmentActivity.class);
+                    //startActivity(i);
                 }
             });
         }
 
         public void bindSubCaterogy(SubCategory sub) {
             subCategory = sub;
+            //itemView on recyclerviewin sisäisen muuttuja
+            Spinner spinner = (Spinner) itemView.findViewById(R.id.spinnerDropdown);
+            ArrayList<String> sampledata = new ArrayList<String>();
+            sampledata.add("1");sampledata.add("2");sampledata.add("3");sampledata.add("4");
+
+            //adapteri spinnerille
+            ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, sampledata);
+
+            //itemin leiska
+            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+            spinner.setAdapter(spinnerAdapter);
 
             ((TextView) itemView.findViewById(R.id.subTitleText)).setText(subCategory.title);
             ((TextView) itemView.findViewById(R.id.subDescText)).setText(subCategory.desc);
@@ -126,8 +135,8 @@ public class SubCategoryFragment extends Fragment {
     }
 
     private class SubCategory {
-        String title = "titteli";
-        String desc = "desCiX";
+        String title = "";
+        String desc = "";
 
         public SubCategory(String title_, String desc_) {
             title = title_;

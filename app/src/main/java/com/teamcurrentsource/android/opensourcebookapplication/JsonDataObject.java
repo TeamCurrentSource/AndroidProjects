@@ -20,6 +20,7 @@ public class JsonDataObject {
         public String relative_url;
         public String description;
         public String title;
+        public String translated_title;
 
         @Override
         public String toString() {
@@ -27,6 +28,7 @@ public class JsonDataObject {
                     "relative_url='" + relative_url + '\'' +
                     ", description='" + description + '\'' +
                     ", title='" + title + '\'' +
+                    ", translated_title='" + translated_title + '\'' +
                     '}';
         }
     }

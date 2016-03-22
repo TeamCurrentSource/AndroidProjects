@@ -21,9 +21,16 @@
         android:layout_below="@+id/subTitleText"
         android:id="@+id/subDescText"
         android:text="nägä"/>
+    <Spinner
+        android:layout_below="@+id/subDescText"
+        android:prompt="@+id/subDescText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinnerDropdown"></Spinner>
+
     <View
         android:id="@+id/horizontalBreak2"
-        android:layout_below="@+id/subDescText"
+        android:layout_below="@+id/spinnerDropdown"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#1a0000"/>
