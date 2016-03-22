@@ -17,12 +17,14 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import java.io.BufferedReader;
 import java.util.ArrayList;
 
 public class CategoryListView extends AppCompatActivity {
 
     ArrayList<CategoryItem> categoryItemArrayList;
     CategoryListAdapter adapter;
+    private JsonDataObject dataObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +46,26 @@ public class CategoryListView extends AppCompatActivity {
         categoryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(HttpRequestTask.LOG_TAG, String.valueOf(position));
-                Intent i = new Intent(CategoryListView.this, SingleCategoryActivity.class);
-                startActivity(i);
+                String title = categoryItemArrayList.get(position).title.toLowerCase();
+                title = title.replace(' ', '-');
+
+                new HttpRequestTask(Routes.CATEROGY + title, new HttpRequestListener() {
+                    @Override
+                    public void processHttpRequest(Gson gson, BufferedReader reader) {
+                        dataObject = gson.fromJson(reader, JsonDataObject.class);
+                        Log.d(HttpRequestTask.LOG_TAG, dataObject.toString());
+                    }
+                },  CategoryListView.this, SingleCategoryActivity.class).execute();
+
+                Log.d(HttpRequestTask.LOG_TAG, title);
            }
          }
         );
         categoryList.setAdapter(adapter);
+    }
+
+    public JsonDataObject getDataObject() {
+        return dataObject;
     }
 
     private void initializeListItems(String json) {
@@ -75,14 +90,16 @@ public class CategoryListView extends AppCompatActivity {
 
     public class CategoryListAdapter extends ArrayAdapter<CategoryItem> {
 
+        //passataan mikä activity kutsunut ja itse data
         public CategoryListAdapter(Context context, ArrayList<CategoryItem> categories) {
             super(context, 0, categories);
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-
+            //
             CategoryItem item = getItem(position);
+            //jos alustamaton haetaan layoutti resourceista
             if(convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
             }

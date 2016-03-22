@@ -4,6 +4,12 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+    <View
+        android:id="@+id/horizontalBreak"
+        android:layout_above="@+id/subTitleText"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1a0000"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,5 +21,11 @@
         android:layout_below="@+id/subTitleText"
         android:id="@+id/subDescText"
         android:text="nägä"/>
+    <View
+        android:id="@+id/horizontalBreak2"
+        android:layout_below="@+id/subDescText"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1a0000"/>
 
 </RelativeLayout>

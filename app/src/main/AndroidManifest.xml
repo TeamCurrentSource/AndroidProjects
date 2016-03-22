@@ -24,6 +24,8 @@
         </activity>
         <activity android:name=".SingleCategoryActivity">
         </activity>
+        <activity android:name=".SubCategoryActivity">
+        </activity>
     </application>
 
 </manifest>

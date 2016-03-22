@@ -21,9 +21,7 @@ import java.net.URL;
  * Created by Antti on 17.3.2016.
  */
 public class HttpRequestTask extends AsyncTask<Object, Void, String> {
-    private static final String BASEURL = "http://www.khanacademy.org/api/v1";
     public static final String LOG_TAG = "HttpRequestTask";
-    private static final String CATEGORIES = "/topictree?kind=topic";
     public static final String INDEX = "JsonDataObject";
     private HttpRequestListener listener;
     private Context source;
@@ -42,7 +40,7 @@ public class HttpRequestTask extends AsyncTask<Object, Void, String> {
         HttpURLConnection connection = null;
         try {
             Log.d(LOG_TAG, "Entering doInBackground");
-            URL url = new URL(BASEURL + CATEGORIES);
+            URL url = new URL(currentUrl);
             connection = (HttpURLConnection) url.openConnection();
             connection.connect();
 
@@ -73,27 +71,26 @@ public class HttpRequestTask extends AsyncTask<Object, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         Log.d(LOG_TAG, "Staring new intent");
-
-        //tarkasta jos luokka on mainact
-        ((MainActivity) source).cancelProgressDialog();
+        Log.d(LOG_TAG, source.getClass().toString());
+        Log.d(LOG_TAG, MainActivity.class.toString());
         Intent intent = new Intent(source,destination);
-        JsonDataObject obj = ((MainActivity) source).getDataObject();
-        intent.putExtra(INDEX, new Gson().toJson(obj));
-        Log.d(LOG_TAG, new Gson().toJson(obj));
-        source.startActivity(intent);        //passataan data stringinä
+        //tarkasta luokka
+        redirectToActivityAndDoProcedures(intent);
+        source.startActivity(intent);
         Log.d(LOG_TAG, "onPostExecute finesed!");
     }
 
-    private String redirect() {
-        Log.d(LOG_TAG, currentUrl);
-
-        switch(currentUrl) {
-            case CATEGORIES:
-                Log.d(LOG_TAG, CATEGORIES);
-                return CATEGORIES;
-            default:
-                break;
+    private void redirectToActivityAndDoProcedures(Intent intent) {
+        if(source.getClass() == MainActivity.class) {
+            ((MainActivity) source).cancelProgressDialog();
+            JsonDataObject obj = ((MainActivity) source).getDataObject();
+            intent.putExtra(INDEX, new Gson().toJson(obj));
+            Log.d(LOG_TAG, "Spinner stoppped");
         }
-        return null;
+        if(source.getClass() == CategoryListView.class) {
+            JsonDataObject obj = ((CategoryListView) source).getDataObject();
+            intent.putExtra(INDEX, new Gson().toJson(obj));
+        }
     }
+
 }

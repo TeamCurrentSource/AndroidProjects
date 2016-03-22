@@ -30,12 +30,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setTitle("E-Kirjasto");
+        setTitle("Khans");
     }
 
     public void onClickGetCategories(View v) {
         progressDialog = ProgressDialog.show(MainActivity.this, "", "Loading. Please wait...", true);
-        new HttpRequestTask("CATEGORY", new HttpRequestListener() {
+        new HttpRequestTask(Routes.CATEGORIES, new HttpRequestListener() {
             @Override
             public void processHttpRequest(Gson gson, BufferedReader reader) {
                 dataObject = gson.fromJson(reader, JsonDataObject.class);

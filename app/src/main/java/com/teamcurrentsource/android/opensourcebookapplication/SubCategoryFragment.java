@@ -1,16 +1,22 @@
 package com.teamcurrentsource.android.opensourcebookapplication;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
+import java.io.BufferedReader;
 import java.util.ArrayList;
 
 /**
@@ -28,18 +34,30 @@ public class SubCategoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstaceState) {
         View view = inflater.inflate(R.layout.activity_sub_category_fragment, container, false);
 
+        initializeItems();
+
         recyclerView = (RecyclerView) view.findViewById(R.id.subcategory_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        subCategoryArray = new ArrayList<SubCategory>();
-        for(int i = 0; i < 50; i++) {
-            subCategoryArray.add(new SubCategory("Title "+ i, "Desc " + i));
-        }
 
         adapter = new SubCategoryAdapter(subCategoryArray);
         recyclerView.setAdapter(adapter);
 
         return view;
+    }
+
+    private void initializeItems() {
+        subCategoryArray = new ArrayList<SubCategory>();
+        Bundle bundle = this.getArguments();
+        if(bundle != null) {
+            String data = bundle.getString(SingleCategoryActivity.INDEX);
+            Log.d(HttpRequestTask.LOG_TAG, data);
+            JsonDataObject dataObject = new Gson().fromJson(data, JsonDataObject.class);
+
+            for(JsonDataObject.Children c  : dataObject.children) {
+                subCategoryArray.add(new SubCategory("noes", c.description));
+            }
+        }
     }
 
     private class SubCategoryHolder extends RecyclerView.ViewHolder {
@@ -48,6 +66,24 @@ public class SubCategoryFragment extends Fragment {
 
         public SubCategoryHolder(View v) {
             super(v);
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    Log.d(HttpRequestTask.LOG_TAG, subCategoryArray.get(position).title);
+                    //startActivity(SubCategoryActivity.getCategoryIntent(this, 10));
+                    /*
+                    new HttpRequestTask("CATEGORY", new HttpRequestListener() {
+                        @Override
+                        public void processHttpRequest(Gson gson, BufferedReader reader) {
+                            dataObject = gson.fromJson(reader, JsonDataObject.class);
+                            Log.d(LOG_TAG, dataObject.toString());
+                        }
+                    },  this, CategoryListView.class).execute();*/
+                    Intent i = new Intent(getActivity(), SubCategoryActivity.class);
+                    startActivity(i);
+                }
+            });
         }
 
         public void bindSubCaterogy(SubCategory sub) {
@@ -73,6 +109,7 @@ public class SubCategoryFragment extends Fragment {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
             //täytetään layoutti
             View view = layoutInflater.inflate(R.layout.list_item_subcaterogy, parent, false);
+
             return new SubCategoryHolder(view);
         }
 
