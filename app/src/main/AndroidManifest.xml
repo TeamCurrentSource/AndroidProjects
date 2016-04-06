@@ -26,8 +26,13 @@
         </activity>
         <activity android:name=".VideoFragmentActivity">
         </activity>
+<<<<<<< HEAD
         <activity android:name=".SearchActivity">
         </activity>
+=======
+        <activity android:name=".SearchActivity" />
+        <activity android:name=".YoutubeActivity"/>
+>>>>>>> 2b32367b61aa84e91574a1f9b64087be0177e68e
     </application>
 
 </manifest>

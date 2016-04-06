@@ -22,6 +22,13 @@ public class JsonDataObject {
         public String title;
         public String translated_title;
         public String youtube_id;
+        public SubChildren children[];
+
+        public class SubChildren{
+            public String title;
+            public String youtube_id;
+            public String description;
+        }
         @Override
         public String toString() {
             return "Children{" +
