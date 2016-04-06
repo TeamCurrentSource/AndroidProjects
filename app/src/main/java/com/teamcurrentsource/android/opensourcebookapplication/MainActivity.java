@@ -46,9 +46,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickSearchButton(View view){
 
+        Intent intent = new Intent(MainActivity.this, YoutubeActivity.class);
+        startActivity(intent);
 
-
-
+/*
         progressDialog = ProgressDialog.show(MainActivity.this, "", "Loading. Please wait...", true);
         new HttpRequestTask(Routes.VIDEOS, new HttpRequestListener() {
             @Override
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 dataObject = gson.fromJson(reader, JsonDataObject.class);
                 Log.d(LOG_TAG, dataObject.toString());
             }
-        },  this, SearchActivity.class).execute();
+        },  this, SearchActivity.class).execute();*/
 
     }
 
