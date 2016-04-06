@@ -12,7 +12,7 @@ import com.google.gson.Gson;
 import java.io.BufferedReader;
 
 
-// TErveppä terve
+// Tereveisiä täältä tampereelta
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,6 +45,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickSearchButton(View view){
+
+
+
+
         progressDialog = ProgressDialog.show(MainActivity.this, "", "Loading. Please wait...", true);
         new HttpRequestTask(Routes.VIDEOS, new HttpRequestListener() {
             @Override
@@ -53,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(LOG_TAG, dataObject.toString());
             }
         },  this, SearchActivity.class).execute();
+
     }
 
     public JsonDataObject getDataObject() {

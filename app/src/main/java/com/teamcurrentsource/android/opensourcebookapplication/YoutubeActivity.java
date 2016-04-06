@@ -26,13 +26,7 @@ public class YoutubeActivity extends YouTubeBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_youtube);
 
-        String data = getIntent().getExtras().getString("key");
-        if(data.equals("jari")){
-            video_id = jari;
-        }
-        if(data.equals("jvg")){
-            video_id = jvg;
-        }
+        video_id = jari;
 
         youTubePlayerView = (YouTubePlayerView) findViewById(R.id.youtubeView);
         textView = (TextView)findViewById(R.id.descriptionTextView);
