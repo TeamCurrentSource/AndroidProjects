@@ -39,6 +39,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#b3ffff"
+            android:onClick="onClickSearchButton"
             android:src="@drawable/search3"/>
 
     </LinearLayout>
@@ -66,6 +67,7 @@
             android:drawableRight="@drawable/ic_no_line_arrow"
             android:background="#80e5ff"
             android:paddingRight="30dp"
+            android:onClick="onClickSearchButton"
             android:text="Haku"/>
 
     </LinearLayout>

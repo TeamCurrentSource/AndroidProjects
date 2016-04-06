@@ -21,7 +21,7 @@ public class JsonDataObject {
         public String description;
         public String title;
         public String translated_title;
-
+        public String youtube_id;
         @Override
         public String toString() {
             return "Children{" +

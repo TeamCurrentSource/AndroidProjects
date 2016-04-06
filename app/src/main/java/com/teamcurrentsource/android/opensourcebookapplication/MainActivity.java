@@ -44,6 +44,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void onClickSearchButton(View view){
+        progressDialog = ProgressDialog.show(MainActivity.this, "", "Loading. Please wait...", true);
+        new HttpRequestTask(Routes.VIDEOS, new HttpRequestListener() {
+            @Override
+            public void processHttpRequest(Gson gson, BufferedReader reader) {
+                dataObject = gson.fromJson(reader, JsonDataObject.class);
+                Log.d(LOG_TAG, dataObject.toString());
+            }
+        },  this, SearchActivity.class).execute();
+    }
+
     public JsonDataObject getDataObject() {
         return dataObject;
     }
