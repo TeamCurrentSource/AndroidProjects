@@ -13,23 +13,24 @@ import android.util.Log;
 
 public class SubCategoryFragmentActivity extends FragmentActivity {
 
+    public FragmentManager fragmentManager;
     public static String INDEX = "DATA";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_category);
 
+
         String data = getIntent().getStringExtra(HttpRequestTask.INDEX);
         Log.d(HttpRequestTask.LOG_TAG, "-------------------------");
 
         Log.d(HttpRequestTask.LOG_TAG, data);
 
-        //alustetaan fragment manageri
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        //etsitään fragmentti, resourceista, fragment 'viittaa' itse juurilayoutin id:seen
+        fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentById(R.id.subcategory_container);
 
         if(fragment == null) {
+            Log.d("123", "beginTransac");
             Bundle bundle = new Bundle();
             bundle.putString(INDEX, data);
             fragment = createNewFragment();
@@ -38,6 +39,15 @@ public class SubCategoryFragmentActivity extends FragmentActivity {
             fragmentManager.beginTransaction().add(R.id.subcategory_container, fragment).commit();
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(fragmentManager.getBackStackEntryCount() == 0) {
+            super.onBackPressed();
+        } else {
+        fragmentManager.popBackStack();
+        }
     }
 
     protected Fragment createNewFragment() {

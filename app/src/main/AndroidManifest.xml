@@ -3,6 +3,7 @@
           xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -24,15 +25,10 @@
         </activity>
         <activity android:name=".SubCategoryFragmentActivity">
         </activity>
-        <activity android:name=".VideoFragmentActivity">
-        </activity>
-<<<<<<< HEAD
         <activity android:name=".SearchActivity">
         </activity>
-=======
         <activity android:name=".SearchActivity" />
         <activity android:name=".YoutubeActivity"/>
->>>>>>> 2b32367b61aa84e91574a1f9b64087be0177e68e
     </application>
 
 </manifest>

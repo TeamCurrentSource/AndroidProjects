@@ -12,8 +12,6 @@ import com.google.gson.Gson;
 import java.io.BufferedReader;
 
 
-// Tereveisiä täältä tampereelta
-
 public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "MainAct";

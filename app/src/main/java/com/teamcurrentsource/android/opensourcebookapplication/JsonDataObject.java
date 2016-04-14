@@ -8,27 +8,23 @@ import java.util.Arrays;
 
 public class JsonDataObject {
     public Children children[];
+    public UrlObject download_urls;
+    public String domain_slug;
 
-    @Override
-    public String toString() {
-        return "JsonDataObject{" +
-                "children=" + Arrays.toString(children) +
-                '}';
+
+    public class UrlObject {
+        public String png;
     }
-
     public class Children {
         public String relative_url;
         public String description;
         public String title;
         public String translated_title;
         public String youtube_id;
+        public String node_slug;
+        public String kind;
         public SubChildren children[];
 
-        public class SubChildren{
-            public String title;
-            public String youtube_id;
-            public String description;
-        }
         @Override
         public String toString() {
             return "Children{" +
@@ -36,7 +32,28 @@ public class JsonDataObject {
                     ", description='" + description + '\'' +
                     ", title='" + title + '\'' +
                     ", translated_title='" + translated_title + '\'' +
+                    ", youtube_id='" + youtube_id + '\'' +
+                    ", node_slug='" + node_slug + '\'' +
+                    ", kind='" + kind + '\'' +
+                    ", children=" + Arrays.toString(children) +
                     '}';
+        }
+
+        public class SubChildren{
+            public String title;
+            public String youtube_id;
+            public String description;
+            public String node_slug;
+
+            @Override
+            public String toString() {
+                return "SubChildren{" +
+                        "title='" + title + '\'' +
+                        ", youtube_id='" + youtube_id + '\'' +
+                        ", description='" + description + '\'' +
+                        ", node_slug='" + node_slug + '\'' +
+                        '}';
+            }
         }
     }
 }

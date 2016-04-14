@@ -3,6 +3,7 @@ package com.teamcurrentsource.android.opensourcebookapplication;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -70,13 +71,11 @@ public class HttpRequestTask extends AsyncTask<Object, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        Log.d(LOG_TAG, "Staring new intent");
-        Log.d(LOG_TAG, source.getClass().toString());
-        Log.d(LOG_TAG, MainActivity.class.toString());
-        Intent intent = new Intent(source,destination);
+        if(source != null) {
+            Intent intent = new Intent(source, destination);
+            redirectToActivityAndDoProcedures(intent);
+        }
         //tarkasta luokka
-        redirectToActivityAndDoProcedures(intent);
-        source.startActivity(intent);
         Log.d(LOG_TAG, "onPostExecute finesed!");
     }
 
@@ -86,10 +85,13 @@ public class HttpRequestTask extends AsyncTask<Object, Void, String> {
             JsonDataObject obj = ((MainActivity) source).getDataObject();
             intent.putExtra(INDEX, new Gson().toJson(obj));
             Log.d(LOG_TAG, "Spinner stoppped");
+            source.startActivity(intent);
+
         }
         if(source.getClass() == CategoryActivity.class) {
             JsonDataObject obj = ((CategoryActivity) source).getDataObject();
             intent.putExtra(INDEX, new Gson().toJson(obj));
+            source.startActivity(intent);
         }
     }
 
