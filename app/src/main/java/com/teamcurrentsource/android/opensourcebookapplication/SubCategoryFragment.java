@@ -84,8 +84,11 @@ public class SubCategoryFragment extends Fragment {
 
             Boolean visited = false;
             hasVideos = false;
+            SubCategoryFragmentActivity.headerTextView.setText(dataObject.children[0].kind + "s");
 
-                for (final JsonDataObject.Children c : dataObject.children) {
+
+            for (final JsonDataObject.Children c : dataObject.children) {
+                    Log.d("tyyppi", c.kind);
                     if(c.kind.equals("Topic") || c.kind.equals("Video")) {
                         subCategoryArray.add(new SubCategory(c.translated_title, "", c.node_slug, "", c.kind, ""));
                     }
@@ -141,43 +144,27 @@ public class SubCategoryFragment extends Fragment {
                     int position = getAdapterPosition();
                     String node_slug = subCategoryArray.get(position).node_slug;
 
-                    Log.d(LOG_TAG, "ONCLICK KIND: " + subCategoryArray.get(position).kind);
-                    Log.d(LOG_TAG, "ONCLICK TITLE: " + subCategoryArray.get(position).title);
-                    Log.d(LOG_TAG, "ONCLICK NODE_LUSG: " + subCategoryArray.get(position).node_slug);
-
-                    //String url = subCategoryArray.get(position).youtube_id.isEmpty()?  Routes.CATEROGY + node_slug: Routes.;
-
                     if (subCategoryArray.get(position).youtube_id.isEmpty()) {
                         new HttpRequestTask(Routes.CATEROGY + node_slug, new HttpRequestListener() {
                             @Override
                             public void processHttpRequest(Gson data, BufferedReader reader) {
                                 dataObject = data.fromJson(reader, JsonDataObject.class);
 
-                                if (!subCategoryArray.isEmpty()) {
-                                    Log.d(LOG_TAG, "Onclick avataan uusi frag, data -> " + subCategoryArray.get(0).kind + " " + subCategoryArray.get(0).node_slug);
-                                }
                                 Fragment fragment;
                                 if (!subCategoryArray.isEmpty() && subCategoryArray.get(0).kind.equals("Topic")) {
-                                    Log.d(LOG_TAG, "New fragment! children.kind = " + dataObject.children[0].kind);
                                     Bundle bundle = new Bundle();
 
                                     bundle.putString("DATA", new Gson().toJson(dataObject));
                                     bundle.putString("newcat", "sda");
                                     fragment = new SubCategoryFragment();
                                     fragment.setArguments(bundle);
-                                } else {
-                                    Log.d(LOG_TAG, "New fragment! children.kind = " + dataObject.children[0].kind);
-                                    Log.d(LOG_TAG, "New fragment Video data:" + dataObject.toString());
 
-                                    fragment = new VideoFragment();
+                                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                    fragmentManager.beginTransaction()
+                                            .replace(R.id.subcategory_container, fragment)
+                                            .addToBackStack(null)
+                                            .commit();
                                 }
-
-
-                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                fragmentManager.beginTransaction()
-                                        .replace(R.id.subcategory_container, fragment)
-                                        .addToBackStack(null)
-                                        .commit();
                             }
                         }, null, null).execute();
                     } else {
