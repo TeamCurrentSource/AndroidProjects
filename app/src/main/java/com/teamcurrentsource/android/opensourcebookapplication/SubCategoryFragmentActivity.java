@@ -7,9 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-/**
- * Created by Antti on 21.3.2016.
- */
 
 public class SubCategoryFragmentActivity extends FragmentActivity {
 
@@ -19,6 +16,8 @@ public class SubCategoryFragmentActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_category);
+
+        //MyImageLoader.initializeImageLoader(SubCategoryFragment.class);
 
 
         String data = getIntent().getStringExtra(HttpRequestTask.INDEX);

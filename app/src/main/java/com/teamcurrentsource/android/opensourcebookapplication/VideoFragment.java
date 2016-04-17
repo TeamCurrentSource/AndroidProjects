@@ -11,9 +11,7 @@ import android.view.ViewGroup;
 import com.google.gson.Gson;
 
 
-/**
- * Created by Antti on 21.3.2016.
- */
+
 
 public class VideoFragment extends Fragment {
 

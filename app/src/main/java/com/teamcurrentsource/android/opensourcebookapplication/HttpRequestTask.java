@@ -18,9 +18,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-/**
- * Created by Antti on 17.3.2016.
- */
+
 public class HttpRequestTask extends AsyncTask<Object, Void, String> {
     public static final String LOG_TAG = "HttpRequestTask";
     public static final String INDEX = "JsonDataObject";

@@ -95,7 +95,7 @@ public class CategoryActivity extends AppCompatActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            //
+
             CategoryItem item = getItem(position);
             //jos alustamaton haetaan layoutti resourceista
             if(convertView == null) {

@@ -1,12 +1,9 @@
 package com.teamcurrentsource.android.opensourcebookapplication;
 
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.media.Image;
-import android.net.Uri;
-import android.support.v4.app.Fragment;
+import android.content.Intent;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
@@ -21,23 +18,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Request;
+
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-/**
- * Created by Antti on 21.3.2016.
- */
+
 
 public class SubCategoryFragment extends Fragment {
 
@@ -51,39 +38,32 @@ public class SubCategoryFragment extends Fragment {
     public ArrayList<JsonVideoObject>videos;
     public ProgressDialog progressDialog;
     public Boolean flag = true;
-    public ImageLoader imageLoader;
+    public Boolean hasVideos = false;
+    public Boolean initialized = false;
+    //public ImageLoader imageLoader;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstaceState) {
 
-        Log.d(LOG_TAG, "onCreate");
         View view = inflater.inflate(R.layout.activity_sub_category_fragment, container, false);
         imageUrls = new ArrayList<String>();
+        Log.d("arvo", "1 " + Boolean.toString(flag));
+
         initializeItems();
-
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .imageScaleType(ImageScaleType.EXACTLY)
-                .build();
-
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getContext())
-                .writeDebugLogs()
-                .defaultDisplayImageOptions(defaultOptions)
-                .diskCacheExtraOptions(480, 320, null)
-                .build();
-
-        ImageLoader.getInstance().init(config);
+        Log.d("arvo", "2 " +Boolean.toString(flag));
         while (flag) {
-            try { Thread.sleep(100); }
+            try { Thread.sleep(100); Log.d(LOG_TAG, "JUMISSA");}
             catch (InterruptedException e) { e.printStackTrace(); }
         }
+        Log.d("arvo", "3 " +Boolean.toString(flag));
+
+        MyImageLoader.initializeImageLoader(getContext());
+
         recyclerView = (RecyclerView) view.findViewById(R.id.subcategory_recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         adapter = new SubCategoryAdapter(getContext(), subCategoryArray);
-
         recyclerView.setAdapter(adapter);
 
         return view;
@@ -94,46 +74,52 @@ public class SubCategoryFragment extends Fragment {
         subCategoryArray = new ArrayList<SubCategory>();
         Bundle bundle = this.getArguments();
         if (bundle != null) {
-            Log.d(LOG_TAG, "BUNTLE IS NAT EMPTI");
 
             String data = bundle.getString("DATA");
-            Log.d(LOG_TAG, data);
-            JsonDataObject dataObject = new Gson().fromJson(data, JsonDataObject.class);
-            Log.d(LOG_TAG, "GZON");
+            final JsonDataObject dataObject = new Gson().fromJson(data, JsonDataObject.class);
 
-            boolean visited = false;
+            Log.d(LOG_TAG, "Initialize items");
+            Log.d(LOG_TAG, "Initialize items. DATA: " + data);
+
+
+            Boolean visited = false;
+            hasVideos = false;
+
                 for (final JsonDataObject.Children c : dataObject.children) {
-                    subCategoryArray.add(new SubCategory(c.translated_title, "", c.node_slug, "", c.kind));
-                    Log.d(LOG_TAG, c.kind);
+                    if(c.kind.equals("Topic") || c.kind.equals("Video")) {
+                        subCategoryArray.add(new SubCategory(c.translated_title, "", c.node_slug, "", c.kind, ""));
+                    }
                     if (c.kind.equals("Video")) {
+                        hasVideos = true;
+                        Log.d(LOG_TAG, "Initialize items. c.kind = video");
                         if (!visited) {
-                            new HttpRequestTask(Routes.getVideoImageUrl(dataObject.domain_slug), new HttpRequestListener() {
+                            new HttpRequestTask(Routes.getVideoImageUrl(dataObject.node_slug), new HttpRequestListener() {
                                 @Override
                                 public void processHttpRequest(Gson data, BufferedReader reader) {
+                                    Log.d(LOG_TAG, "fetching video from domain: " + dataObject.node_slug);
                                     videos = new ArrayList<JsonVideoObject>(Arrays.asList(data.fromJson(reader, JsonVideoObject[].class)));
-
-                                    Log.d("sub", "sizeof adapter: " + Integer.toString(subCategoryArray.size()));
+                                    Log.d(LOG_TAG, "Fetch videos: ");
                                     int i = 0;
                                     for (JsonVideoObject vid : videos) {
-                                        //subCategoryArray.add(new SubCategory(Integer.toString(i), "", c.node_slug, vid.download_urls.png, c.kind));
+                                        Log.d(LOG_TAG, "URLIT: " + vid.download_urls);
 
-                                        Log.d("123", "SETTING URLS");
-                                        Log.d("sub", vid.download_urls.png);
                                         imageUrls.add(vid.download_urls.png);
                                         subCategoryArray.get(i).image = vid.download_urls.png;
+                                        subCategoryArray.get(i).youtube_id = vid.youtube_id;
+                                        Log.d(LOG_TAG, "ELEMENTTI: " + subCategoryArray.get(i).title);
+
                                         i++;
                                     }
-                                    Log.d("sub", "URLFINISH");
                                     flag = false;
+                                    hasVideos = false;
                                 }
                             }, null, null).execute();
                             visited = true;
                         }
-                    } else {
-                        flag = false;
                     }
                 }
-            }
+            flag = hasVideos ? true : false;
+        }
 
     }
 
@@ -154,40 +140,58 @@ public class SubCategoryFragment extends Fragment {
                 public void onClick(View v) {
                     int position = getAdapterPosition();
                     String node_slug = subCategoryArray.get(position).node_slug;
-                    Log.d(LOG_TAG, subCategoryArray.get(position).node_slug);
-                    Log.d(LOG_TAG, "click...!!!!sads");
-                    Log.d(LOG_TAG, subCategoryArray.get(0).kind);
 
-                    Log.d(LOG_TAG, Routes.CATEROGY + node_slug);
+                    Log.d(LOG_TAG, "ONCLICK KIND: " + subCategoryArray.get(position).kind);
+                    Log.d(LOG_TAG, "ONCLICK TITLE: " + subCategoryArray.get(position).title);
+                    Log.d(LOG_TAG, "ONCLICK NODE_LUSG: " + subCategoryArray.get(position).node_slug);
 
-                    new HttpRequestTask(Routes.CATEROGY + node_slug, new HttpRequestListener() {
-                       @Override
-                       public void processHttpRequest(Gson data, BufferedReader reader) {
-                           dataObject = data.fromJson(reader, JsonDataObject.class);
-                           Log.d(LOG_TAG, dataObject.toString());
-                           Log.d(LOG_TAG, dataObject.children[0].kind);
+                    //String url = subCategoryArray.get(position).youtube_id.isEmpty()?  Routes.CATEROGY + node_slug: Routes.;
 
-                           Fragment fragment;
-                           if(dataObject.children[0].kind.equals("Topic")) {
-                               Log.d(LOG_TAG, "Its a topic, move on");
-                               Bundle bundle = new Bundle();
+                    if (subCategoryArray.get(position).youtube_id.isEmpty()) {
+                        new HttpRequestTask(Routes.CATEROGY + node_slug, new HttpRequestListener() {
+                            @Override
+                            public void processHttpRequest(Gson data, BufferedReader reader) {
+                                dataObject = data.fromJson(reader, JsonDataObject.class);
 
-                               bundle.putString("DATA", new Gson().toJson(dataObject));
-                               bundle.putString("newcat", "sda");
-                               fragment = new SubCategoryFragment();
-                               fragment.setArguments(bundle);
-                           } else {
-                               fragment = new VideoFragment();
-                           }
+                                if (!subCategoryArray.isEmpty()) {
+                                    Log.d(LOG_TAG, "Onclick avataan uusi frag, data -> " + subCategoryArray.get(0).kind + " " + subCategoryArray.get(0).node_slug);
+                                }
+                                Fragment fragment;
+                                if (!subCategoryArray.isEmpty() && subCategoryArray.get(0).kind.equals("Topic")) {
+                                    Log.d(LOG_TAG, "New fragment! children.kind = " + dataObject.children[0].kind);
+                                    Bundle bundle = new Bundle();
+
+                                    bundle.putString("DATA", new Gson().toJson(dataObject));
+                                    bundle.putString("newcat", "sda");
+                                    fragment = new SubCategoryFragment();
+                                    fragment.setArguments(bundle);
+                                } else {
+                                    Log.d(LOG_TAG, "New fragment! children.kind = " + dataObject.children[0].kind);
+                                    Log.d(LOG_TAG, "New fragment Video data:" + dataObject.toString());
+
+                                    fragment = new VideoFragment();
+                                }
 
 
-                           FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                           fragmentManager.beginTransaction()
-                                   .replace(R.id.subcategory_container, fragment)
-                                   .addToBackStack(null)
-                                   .commit();
-                       }
-                    },  null, null).execute();
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                fragmentManager.beginTransaction()
+                                        .replace(R.id.subcategory_container, fragment)
+                                        .addToBackStack(null)
+                                        .commit();
+                            }
+                        }, null, null).execute();
+                    } else {
+
+                        Bundle extras = new Bundle();
+                        extras.putString("Title", subCategoryArray.get(position).title);
+                        extras.putString("Description", subCategoryArray.get(position).desc);
+                        extras.putString("youtubeId", subCategoryArray.get(position).youtube_id);
+
+                        Intent intent = new Intent(getContext(), YoutubeActivity.class);
+                        intent.putExtras(extras);
+                        startActivity(intent);
+
+                    }
                 }
             });
 
@@ -195,16 +199,17 @@ public class SubCategoryFragment extends Fragment {
 
         public void bindSubCaterogy(SubCategory sub) {
             subCategory = sub;
+            Log.d(LOG_TAG, "bindSubCategory, elementti: " + sub.title + " " + sub.image);
+
+            Log.d(LOG_TAG, "bindSubCategory, bindataan kuvat!");
             if(!subCategory.image.isEmpty()) {
-
-                Log.d("123", "IMAGEVIEWI");
+                Log.d(LOG_TAG, "kuva löytyy, laitetaash siihe kuva");
                 Boolean isImage = mImageView.getDrawable() == null;
-                Log.d("123", Boolean.toString(isImage));
-                Log.d("sub", subCategory.image);
-                ImageLoader.getInstance().displayImage(subCategory.image, mImageView);
-
+                //ImageLoader.getInstance().displayImage(subCategory.image, mImageView);
+                MyImageLoader.getMyImageLoader().displayImage(subCategory.image, mImageView);
+            } else {
+                MyImageLoader.getMyImageLoader().displayImage("http://cdn.embed.ly/providers/logos/khanacademy.png", mImageView);
             }
-            Log.d(LOG_TAG, "SETTING TEXT");
 
             ((TextView) itemView.findViewById(R.id.myImageViewText)).setText(subCategory.title);
         }
@@ -230,6 +235,7 @@ public class SubCategoryFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(SubCategoryHolder holder, int position) {
+            Log.d(LOG_TAG, "onBindViewHolder... position: " + Integer.toString(position));
             SubCategory subCategory = subCategories.get(position);
             holder.bindSubCaterogy(subCategory);
         }
@@ -246,13 +252,15 @@ public class SubCategoryFragment extends Fragment {
         String node_slug = "";
         String image = "";
         String kind = "";
+        String youtube_id = "";
 
-        public SubCategory(String title_, String desc_, String slug_, String image_, String kind_) {
+        public SubCategory(String title_, String desc_, String slug_, String image_, String kind_, String youtube_id_) {
             title = title_;
             desc = desc_;
             node_slug = slug_;
             image = image_;
             kind = kind_;
+            youtube_id = youtube_id_;
         }
     }
 }

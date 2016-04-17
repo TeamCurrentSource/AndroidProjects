@@ -101,13 +101,13 @@ public class SearchActivity extends AppCompatActivity {
 
     private void initializeListItems(String json) {
         JsonDataObject dataObject = new Gson().fromJson(json, JsonDataObject.class);
-
+/*
         for(JsonDataObject.Children c  : dataObject.children) {
             videoItemArrayList.add(new VideoItem(c.title, c.description, c.youtube_id));
             for(JsonDataObject.Children.SubChildren  b : c.children){
                 videoItemArrayList.add(new VideoItem(b.title,b.description, b.youtube_id));
             }
-        }
+        }*/
     }
 
 

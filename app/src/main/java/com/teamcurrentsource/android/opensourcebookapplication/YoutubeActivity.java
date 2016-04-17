@@ -1,5 +1,6 @@
 package com.teamcurrentsource.android.opensourcebookapplication;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,20 +17,22 @@ public class YoutubeActivity extends YouTubeBaseActivity {
     private YouTubePlayer.OnInitializedListener onInitializedListener;
     public String video_id;
 
-    public String jari = "eAFRWQgwet0";
-    public String jvg = "WPi7N42Opzo";
-
-    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_youtube);
 
-        video_id = jari;
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        String videoTitle = extras.getString("Title");
+        String videoDescription = extras.getString("Description");
+
+        video_id = extras.getString("youtubeId");
 
         youTubePlayerView = (YouTubePlayerView) findViewById(R.id.youtubeView);
-        textView = (TextView)findViewById(R.id.descriptionTextView);
+        ((TextView)findViewById(R.id.descriptionTextView)).setText(videoDescription);
+        ((TextView)findViewById(R.id.titleTextView)).setText(videoTitle);
 
         onInitializedListener = new YouTubePlayer.OnInitializedListener() {
             @Override
